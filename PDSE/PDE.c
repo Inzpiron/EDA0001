@@ -1,22 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 //PILHA DINAMICA ENCADEADA
 typedef struct nopde{
 	struct nopde * atras;
-	int valor;
+	void * valor;
 }noPDE;
 
 typedef struct{
 	noPDE * topo;
+	int tamInfo;
 	int size;
 }PDE;
 
 
-PDE * create(){
+PDE * create(int tamInfo){
 	PDE * p = (PDE *) malloc(sizeof(PDE));
-	p -> topo = NULL;
-	p -> size  = 0;
+	p -> topo    = NULL;
+	p -> size    = 0;
+	p -> tamInfo = tamInfo;
 	return p;
 }
 
@@ -27,16 +29,25 @@ int empty(PDE * p){
 	return 0;
 }
 
-void push(PDE * p, int v){
+void * top(PDE * p)
+{
+	if (p -> topo != NULL)
+		return p -> topo -> valor;
+	else
+		return NULL;
+}
+
+void push(PDE * p, void * v){
 	noPDE * Item = (noPDE *)malloc(sizeof(noPDE));
+	Item -> valor = (void *) malloc(p -> tamInfo);
 	if(empty(p)){
 		Item -> atras = NULL;
-		Item -> valor = v;
+		memcpy(Item -> valor, v, p -> tamInfo);
 		p -> topo = Item;
 		p -> size = 1;
 		//printf("A pilha estava vazia e foi adicionado %d ao topo\n", p -> topo -> valor);
 	} else{
-		int t = p -> topo -> valor;
+		//int t = p -> topo -> valor;
 		noPDE * aux = (noPDE *)malloc(sizeof(noPDE));
 		aux -> valor = v;
 	 	aux -> atras = p -> topo;
@@ -51,70 +62,39 @@ int pop(PDE * p){
 		//printf("Pilha esta vazia\n");
 	}else{
 		if(p -> topo -> atras != NULL){
-			int t = p -> topo -> valor;
+			//int t = p -> topo -> valor;
 			noPDE * aux = p -> topo -> atras;
 			free(p -> topo);
 			p -> topo = aux;
 			//printf("O topo antigo era %d e agora sera %d\n", t, p->topo->valor);
-			return t;
+			//return t;
 		}else{	
-			int t = p -> topo -> valor;
+			//int t = p -> topo -> valor;
 			//printf("O topo antigo era %d, agora a pilha esta vazia\n", p -> topo -> valor);
+			int tam = p->tamInfo;
 			free(p -> topo);
 			free(p);
-			p = create();
+			p = create(tam);
 
-			return t;
+			//return t;
 		}
 	}
 }
 
 int main(){
-	system("clear");
-	PDE * pilha = create();
-	printf("Push: + value value ... | value[0,9] | pop: - - - ...\n");
-	int quit = 0, entry = 0, cont = 0;
-	while(!quit){
-		char operation;
-		scanf("%c", &operation);
-		if(operation == '\n')
-			printf("%d", operation);
-		switch(operation){
-			case '+':	
-				while(scanf("%c", &entry) && entry != '\n'){
-					if(entry >= '0' && entry <= '9'){
-						int aux = (int)entry - (int)'0';
-						push(pilha, aux);
-					}
-				}
-			break;
+	PDE * pilha = create(sizeof(int));
+	int a[] = {1, 2, 3, 4, 5};
+	push(pilha, &a[0]);
+	push(pilha, &a[1]);
+	push(pilha, &a[2]);
+	push(pilha, &a[3]);
+	push(pilha, &a[4]);
+	pop(pilha);
 
-			case '-':
-				while(scanf("%c", &entry) && entry != '\n'){
-					if(entry == '-')
-						pop(pilha);
-				}
-			break;
+	int * Topo = (int *) top(pilha);
+	printf("topo é %d\n", *Topo);
 
-			default:
-				quit = 1;
-			break;
-		}
-
-		if(!empty(pilha)){
-			noPDE * Item = (noPDE *)malloc(sizeof(noPDE));
-			Item = pilha -> topo;
-			printf("Stack:");
-			while(Item != NULL){
-				printf(" %d", Item -> valor);
-				Item = Item -> atras;
-			}
-			printf("\n");
-		}else
-			printf("Stack is empty\n");
-
-		cont++;
-	}
-
+	//char * topo = pilha -> topo -> valor;
+	//printf("%c\n", topo(pilha));
 	return 0;
 }
