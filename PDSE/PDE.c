@@ -56,7 +56,7 @@ void push(PDE * p, void * v){
 	 	//printf("O topo era %d, e agora será %d\n", t, p->topo->valor);
 	}
 }
-
+	
 int pop(PDE * p){
 	if(empty(p)){
 		//printf("Pilha esta vazia\n");
@@ -82,18 +82,17 @@ int pop(PDE * p){
 }
 
 int main(){
-	PDE * pilha = create(sizeof(int));
-	int a[] = {1, 2, 3, 4, 5};
-	push(pilha, &a[0]);
-	push(pilha, &a[1]);
-	push(pilha, &a[2]);
-	push(pilha, &a[3]);
-	push(pilha, &a[4]);
+	void * str = "Tuca é meu amiguinho =D";
+	printf("%s\n", (char *) str);
+	PDE * pilha = create(sizeof(char) * 20);
+	push(pilha, "bruno");
+	push(pilha, "vitor");
+	push(pilha, "leo");
 	pop(pilha);
-
-	int * Topo = (int *) top(pilha);
-	printf("topo é %d\n", *Topo);
-
+	push(pilha, "teste");
+	char * Topo = (char *) top(pilha);
+	printf("topo é %s\n", Topo);
+	
 	//char * topo = pilha -> topo -> valor;
 	//printf("%c\n", topo(pilha));
 	return 0;
